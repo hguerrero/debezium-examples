@@ -1,0 +1,24 @@
+{
+    "name": "inventory-connector-avro",
+    "config": {
+        "connector.class": "io.debezium.connector.mysql.MySqlConnector",
+        "tasks.max": "1",
+        "database.hostname": "mysql",
+        "database.port": "3306",
+        "database.user": "debezium",
+        "database.password": "dbz",
+        "database.server.id": "184054",
+        "database.server.name": "avro",
+        "database.whitelist": "inventory",
+        "database.history.kafka.bootstrap.servers": "kafka:29092",
+        "database.history.kafka.topic": "schema-changes.inventory",
+        "key.converter": "io.apicurio.registry.utils.converter.AvroConverter",
+        "key.converter.apicurio.registry.url": "http://registry:8080/api",
+        "key.converter.apicurio.registry.global-id": "io.apicurio.registry.utils.serde.strategy.AutoRegisterIdStrategy",
+        "kwy.converter.apicurio.registry.as-confluent": "true",
+        "value.converter": "io.apicurio.registry.utils.converter.AvroConverter",
+        "value.converter.apicurio.registry.url": "http://registry:8080/api",
+        "value.converter.apicurio.registry.global-id": "io.apicurio.registry.utils.serde.strategy.AutoRegisterIdStrategy",
+        "value.converter.apicurio.registry.as-confluent": "true"
+    }
+}
