@@ -111,7 +111,11 @@ Let's check the information there.
    kafkacat -b localhost:9092 -t avro.inventory.customers -s avro -r http://localhost:8081/api/ccompat -e | jq
    ```
 
-You can now see the kafka record information containing only the `payload` as expected, but without the overhead of the Debezium `schema` as it is now externalized in the registry.
+You can now see the kafka record information containing only the `payload` as expected, but without the overhead of the Debezium `schema` as it is now externalized in the registry. 
+
+If you access the *Apicurio schema registry* in the `http://localhost:8081/` url you will be able to find all the schema artifacts.
+
+![schemas.png](/Users/hguerrer/git/debezium-examples/debezium-registry-avro/schemas.png)
 
 ## Summary
 
