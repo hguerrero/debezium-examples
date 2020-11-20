@@ -66,7 +66,7 @@ The following are the lines required to set the **key** and **value** converters
         "key.converter": "io.apicurio.registry.utils.converter.AvroConverter",
         "key.converter.apicurio.registry.url": "http://registry:8080/api",
         "key.converter.apicurio.registry.global-id": "io.apicurio.registry.utils.serde.strategy.AutoRegisterIdStrategy",
-        "kwy.converter.apicurio.registry.as-confluent": "true",
+        "key.converter.apicurio.registry.as-confluent": "true",
         "value.converter": "io.apicurio.registry.utils.converter.AvroConverter",
         "value.converter.apicurio.registry.url": "http://registry:8080/api",
         "value.converter.apicurio.registry.global-id": "io.apicurio.registry.utils.serde.strategy.AutoRegisterIdStrategy",
