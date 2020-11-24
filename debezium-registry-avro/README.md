@@ -66,7 +66,7 @@ The following are the lines required to set the **key** and **value** converters
         "key.converter": "io.apicurio.registry.utils.converter.AvroConverter",
         "key.converter.apicurio.registry.url": "http://registry:8080/api",
         "key.converter.apicurio.registry.global-id": "io.apicurio.registry.utils.serde.strategy.AutoRegisterIdStrategy",
-        "kwy.converter.apicurio.registry.as-confluent": "true",
+        "key.converter.apicurio.registry.as-confluent": "true",
         "value.converter": "io.apicurio.registry.utils.converter.AvroConverter",
         "value.converter.apicurio.registry.url": "http://registry:8080/api",
         "value.converter.apicurio.registry.global-id": "io.apicurio.registry.utils.serde.strategy.AutoRegisterIdStrategy",
@@ -115,7 +115,7 @@ You can now see the kafka record information containing only the `payload` as ex
 
 If you access the *Apicurio schema registry* in the `http://localhost:8081/` url you will be able to find all the schema artifacts.
 
-![schemas.png](/Users/hguerrer/git/debezium-examples/debezium-registry-avro/schemas.png)
+![schemas.png](schemas.png)
 
 ## Summary
 
