@@ -25,7 +25,7 @@
         "key.converter.apicurio.auth.service.url": "https://identity.api.openshift.com/auth",
         "key.converter.apicurio.auth.realm": "rhoas",
         "key.converter.apicurio.auth.client.id": "<registry-sa-client-id>",
-        "key.converter.apicurio.auth.client.secret": "<registry-sa-client-id>",
+        "key.converter.apicurio.auth.client.secret": "<registry-sa-client-secret>",
         "key.converter.apicurio.registry.as-confluent": "true",
         "key.converter.apicurio.registry.auto-register": "true",
         "value.converter": "io.apicurio.registry.utils.converter.AvroConverter",
@@ -34,7 +34,7 @@
         "value.converter.apicurio.auth.service.url": "https://identity.api.openshift.com/auth",
         "value.converter.apicurio.auth.realm": "rhoas",
         "value.converter.apicurio.auth.client.id": "<registry-sa-client-id>",
-        "value.converter.apicurio.auth.client.secret": "<registry-sa-client-id>",
+        "value.converter.apicurio.auth.client.secret": "<registry-sa-client-secret>",
         "value.converter.apicurio.registry.as-confluent": "true",
         "value.converter.apicurio.registry.auto-register": "true"
     }

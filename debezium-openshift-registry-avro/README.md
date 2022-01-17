@@ -20,12 +20,22 @@ OpenShift Service Registry provides an Avro converter that you can specify in De
 ### Prerequisites
 
 - Docker is installed and running.
-This tutorial uses Docker and the Linux container images to run the essential local services. You should use the latest version of Docker. For more information, see the[ Docker Engine installation documentation](https://docs.docker.com/engine/installation/).
+
+  This tutorial uses Docker and the Linux container images to run the essential local services. You should use the latest version of Docker. For more information, see the[ Docker Engine installation documentation](https://docs.docker.com/engine/installation/).
+
 - [kcat](https://github.com/edenhill/kcat)
+
 - [kcctl](https://github.com/kcctl/kcctl)
+
 - [rhoas](https://github.com/redhat-developer/app-services-cli/releases/latest) - Red Hat Openshift Application Services CLIjq (for JSON processing)
+
 - A Red Hat developer account
-As part of the developer program for OpenShift Streams for Apache Kafka, everybody with a Red Hat account can create a Kafka instance free of charge.
+
+  As part of the developer program for OpenShift Streams for Apache Kafka, everybody with a Red Hat account can create a Kafka instance free of charge.
+
+- A running OpenShift Streams cluster
+
+- A running OpenShfit Service Registry instance
 
 ## Starting the local services
 
@@ -73,7 +83,7 @@ The following are the lines required in the connector configuration to set the *
         "key.converter.apicurio.auth.service.url": "https://identity.api.openshift.com/auth",
         "key.converter.apicurio.auth.realm": "rhoas",
         "key.converter.apicurio.auth.client.id": "<registry-sa-client-id>",
-        "key.converter.apicurio.auth.client.secret": "<registry-sa-client-id>",
+        "key.converter.apicurio.auth.client.secret": "<registry-sa-client-secret>",
         "key.converter.apicurio.registry.as-confluent": "true",
         "key.converter.apicurio.registry.auto-register": "true",
         "value.converter": "io.apicurio.registry.utils.converter.AvroConverter",
@@ -82,7 +92,7 @@ The following are the lines required in the connector configuration to set the *
         "value.converter.apicurio.auth.service.url": "https://identity.api.openshift.com/auth",
         "value.converter.apicurio.auth.realm": "rhoas",
         "value.converter.apicurio.auth.client.id": "<registry-sa-client-id>",
-        "value.converter.apicurio.auth.client.secret": "<registry-sa-client-id>",
+        "value.converter.apicurio.auth.client.secret": "<registry-sa-client-secret>",
         "value.converter.apicurio.registry.as-confluent": "true",
         "value.converter.apicurio.registry.auto-register": "true"
 ```
@@ -114,6 +124,10 @@ You will need to manually create the required topics that will be used by Debezi
 You should end with a table of topics like this:
 
 ![topics-openshift-streams-debezium.png](topics-openshift-streams-debezium.png)
+
+**NOTE:** It is also necessary that the topics that start with `debezium-cluster-` are configured with the `compact` policy. If you don't set this property correctly, you will see errors in the kafka connect log and the connector won't be able to start.
+
+![compact policy](cleanup-policy-debezium.png)
 
 ### Configure database history
 
@@ -152,15 +166,164 @@ Now that the configuration for the connector is ready, let's add it to the Kafka
     kcctl apply -f dbz-mysql-openshift-registry-avro.json
     ```
 
-### Check the data
-
-TODO
+### Check the service registry
 
 Access the *Red Hat OpenShift Service Regtistry* console, and you should be able to find all the schema artifacts.
 
 ![registry-debezium-artifacts.png](registry-debezium-artifacts.png)
 
+### Check the data
+
+We will use kcat CLI utility to query the information from the OpenShift Streams Kafka cluster. 
+
+1. Set the environment variables in your terminal session:
+
+   ```sh
+   export BOOTSTRAP_SERVER=<replace-with-bootstrap-server>
+   export CLIENT_ID=<replace-with-kafka-sa-client-id>
+   export CLIENT_SECRET=<replace-with-kafka-sa-client-secret>
+   ```
+
+2. Check connectivity by querying the cluster metadata:
+
+   ```sh
+   kcat -b $BOOTSTRAP_SERVER \
+   -X sasl.mechanisms=PLAIN \
+   -X security.protocol=SASL_SSL \
+   -X sasl.username="$CLIENT_ID" \
+   -X sasl.password="$CLIENT_SECRET" -L
+   ```
+
+   You should get an output similar to the following:
+
+   ```sh
+   Metadata for all topics (from broker -1: sasl_ssl://kafkaesque-c-isn-bhfjlsl-g-dana.bf2.kafka.rhcloud.com:443/bootstrap):
+    3 brokers:
+     broker 0 at broker-0-kafkaesque-c-isn-bhfjlsl-g-dana.bf2.kafka.rhcloud.com:443 (controller)
+     broker 2 at broker-2-kafkaesque-c-isn-bhfjlsl-g-dana.bf2.kafka.rhcloud.com:443
+     broker 1 at broker-1-kafkaesque-c-isn-bhfjlsl-g-dana.bf2.kafka.rhcloud.com:443
+    11 topics:
+     topic "avro.inventory.orders" with 1 partitions:
+       partition 0, leader 0, replicas: 0,1,2, isrs: 0,1,2
+     topic "avro.inventory.addresses" with 1 partitions:
+       partition 0, leader 2, replicas: 2,0,1, isrs: 2,0,1
+     topic "debezium-cluster-configs" with 1 partitions:
+       partition 0, leader 2, replicas: 2,0,1, isrs: 2,0,1
+     topic "debezium-cluster-offsets" with 1 partitions:
+       partition 0, leader 0, replicas: 0,1,2, isrs: 0,1,2
+     topic "avro.inventory.products" with 1 partitions:
+       partition 0, leader 0, replicas: 0,2,1, isrs: 0,2,1
+     topic "debezium-cluster-status" with 1 partitions:
+       partition 0, leader 0, replicas: 0,2,1, isrs: 0,2,1
+     topic "avro" with 1 partitions:
+       partition 0, leader 1, replicas: 1,2,0, isrs: 1,2,0
+     topic "avro.inventory.geom" with 1 partitions:
+       partition 0, leader 0, replicas: 0,2,1, isrs: 0,2,1
+     topic "schema-changes.inventory" with 1 partitions:
+       partition 0, leader 2, replicas: 2,0,1, isrs: 2,0,1
+     topic "avro.inventory.products_on_hand" with 1 partitions:
+       partition 0, leader 0, replicas: 0,2,1, isrs: 0,2,1
+     topic "avro.inventory.customers" with 1 partitions:
+       partition 0, leader 1, replicas: 1,2,0, isrs: 1,2,0
+   ```
+
+   
+
+3. Now check the records on the `customers` topic:
+
+   ```sh
+   kcat -b $BOOTSTRAP_SERVER \
+   -X sasl.mechanisms=PLAIN \
+   -X security.protocol=SASL_SSL \
+   -X sasl.username="$CLIENT_ID" \
+   -X sasl.password="$CLIENT_SECRET" \
+   -t avro.inventory.customers -C -e
+   ```
+
+   You should see the 4 scramble records in the terminal:
+
+   ```sh
+   �
+   Sally
+        Thomas*sally.thomas@acme.com01.5.4.Final-redhat-00001
+   mysqavro����trueinventorycustomers mysql-bin.000003�r����_
+   �
+    George
+          Bailey$gbailey@foobar.com01.5.4.Final-redhat-00001
+   mysqavro����trueinventorycustomers mysql-bin.000003�r����_
+   �
+    Edward
+          Walkered@walker.com01.5.4.Final-redhat-00001
+   mysqavro����trueinventorycustomers mysql-bin.000003�r����_
+   AnneKretchmar$annek@noanswer.org01.5.4.Final-redhat-00001
+   mysqavro����lastinventorycustomers mysql-bin.000003�r����_
+   % Reached end of topic avro.inventory.customers [0] at offset 4
+   ```
+
+   > This is because we are using Avro for the serialization. The kcat utility is expecting Strings and hence, can not convert correctly. We will fix this in the following step.
+
+4. Now that we can see the records, we can then connect with the service registry so kcat can query the used schema and deserialize correctly the missing information:
+
+   ```sh
+   kcat -b $BOOTSTRAP_SERVER \
+   -X sasl.mechanisms=PLAIN \
+   -X security.protocol=SASL_SSL \
+   -X sasl.username="$CLIENT_ID" \
+   -X sasl.password="$CLIENT_SECRET" \
+   -t avro.inventory.customers -C -e \
+   -s avro -r https://<registry-sa-client-id>:<registry-sa-client-secret>@<registry-compatibility-api-url> | jq
+   ```
+
+   > OpenShift Service Registry also supports basic authentication, that's why we are using the credentials in the format: https://username:password@URL
+
+You will be able to see the record in a nice formatted json structure:
+
+```json
+...
+{
+  "before": null,
+  "after": {
+    "Value": {
+      "id": 1004,
+      "first_name": "Anne",
+      "last_name": "Kretchmar",
+      "email": "annek@noanswer.org"
+    }
+  },
+  "source": {
+    "version": "1.5.4.Final-redhat-00001",
+    "connector": "mysql",
+    "name": "avro",
+    "ts_ms": 1642452727355,
+    "snapshot": {
+      "string": "last"
+    },
+    "db": "inventory",
+    "sequence": null,
+    "table": {
+      "string": "customers"
+    },
+    "server_id": 0,
+    "gtid": null,
+    "file": "mysql-bin.000003",
+    "pos": 154,
+    "row": 0,
+    "thread": null,
+    "query": null
+  },
+  "op": "r",
+  "ts_ms": {
+    "long": 1642452727355
+  },
+  "transaction": null
+}
+```
+
+Congratulations! You were able to send Avro serialized records from MySQL to OpenShift Streams using OpenShift Service Registry.
+
 ## Summary
 
-Although Debezium makes it easy to capture database changes and record them in Kafka, one of the more critical decisions you have to make is *how* you will serialize those change events in Kafka. Debezium allows you to select key and value *converters* to choose from different types of options. The *Red Hat OpenShift Service Registry* will enable you to store externalized schema versions to minimize the payload to propagate.
+Although Debezium makes it easy to capture database changes and record them in Kafka, one of the mo
+
+re critical decisions you have to make is *how* you will serialize those change events in Kafka. Debezium allows you to select key and value *converters* to choose from different types of options. The *Red Hat OpenShift Service Registry* will enable you to store externalized schema versions to minimize the payload to propagate.
 
