@@ -33,9 +33,9 @@ OpenShift Service Registry provides an Avro converter that you can specify in De
 
   As part of the developer program for OpenShift Streams for Apache Kafka, everybody with a Red Hat account can create a Kafka instance free of charge.
 
-- A running OpenShift Streams cluster
+- A running [OpenShift Streams cluster](https://developers.redhat.com/articles/2021/07/07/getting-started-red-hat-openshift-streams-apache-kafka#)
 
-- A running OpenShfit Service Registry instance
+- A running [OpenShfit Service Registry instance](https://developers.redhat.com/articles/2021/10/11/get-started-openshift-service-registry)
 
 ## Starting the local services
 
