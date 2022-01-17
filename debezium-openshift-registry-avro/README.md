@@ -103,7 +103,7 @@ You will need to manually create the required topics that will be used by Debezi
     | avro.inventory.addresses | 1    | 604800000 ms (7 days) | Unlimited         |      |
     | avro.inventory.customers | 1    | 604800000 ms (7 days) | Unlimited         |      |
     | avro.inventory.geom | 1    | 604800000 ms (7 days) | Unlimited         |      |
-    | avro.inventory.orders) | 1    | 604800000 ms (7 days) | Unlimited         |      |
+    | avro.inventory.orders | 1    | 604800000 ms (7 days) | Unlimited         |      |
     | avro.inventory.products | 1    | 604800000 ms (7 days) | Unlimited         |      |
     | avro.inventory.products_on_hand | 1    | 604800000 ms (7 days) | Unlimited         |      |
     | debezium-cluster-configs | 1    | 604800000 ms (7 days) | Unlimited         |      |
