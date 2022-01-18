@@ -55,7 +55,7 @@ To start the local services, follow these steps:
     cd debezium-examples/debezium-openshift-registry-avro
     ```
 
-1. Open the `docker-compose.yaml` file and edit the following properties:
+1. Open the `docker-compose.yaml` file and edit the following properties with your cluster information:
 
     ```yaml
           KAFKA_CONNECT_BOOTSTRAP_SERVERS: <your-boostrap-server>:<port>
@@ -65,9 +65,9 @@ To start the local services, follow these steps:
           KAFKA_CONNECT_SASL_PASSWORD_FILE: cpass
     ```
     
-    > You will need your Kafka bootstrap server and the service account you will use to connect. The image then takes the password from a file called `cpass`
+    > You will need your Kafka bootstrap server and the service account you will use to connect. The container image then takes the password from a local file called `cpass`
     
-1. Open the provided `cpass` file and replace the placeholder with your service account secret.
+1. Open the provided `cpass` file and **replace the placeholder** with your service account secret.
 
     ```
     <kafka-sa-client-secret>
@@ -125,19 +125,19 @@ You will need to manually create the required topics that will be used by Debezi
 
 1. Create the following topics in your Kafka cluster:
 
-    | Topic Name | Partitions    | Retention Time | Retention Size         |      |
-    | ------------------------------------------------------------ | ---- | --------------------- | ----------------- | ---- |
-    | avro | 1    | 604800000 ms (7 days) | Unlimited         |      |
-    | avro.inventory.addresses | 1    | 604800000 ms (7 days) | Unlimited         |      |
-    | avro.inventory.customers | 1    | 604800000 ms (7 days) | Unlimited         |      |
-    | avro.inventory.geom | 1    | 604800000 ms (7 days) | Unlimited         |      |
-    | avro.inventory.orders | 1    | 604800000 ms (7 days) | Unlimited         |      |
-    | avro.inventory.products | 1    | 604800000 ms (7 days) | Unlimited         |      |
-    | avro.inventory.products_on_hand | 1    | 604800000 ms (7 days) | Unlimited         |      |
-    | debezium-cluster-configs | 1    | 604800000 ms (7 days) | Unlimited         |      |
-    | debezium-cluster-offsets | 1    | 604800000 ms (7 days) | Unlimited         |      |
-    | debezium-cluster-status | 1    | 604800000 ms (7 days) | Unlimited         |      |
-    | schema-changes.inventory | 1    | 604800000 ms (7 days) | Unlimited |      |
+    | Topic Name | Partitions    | Retention Time | Retention Size         |
+    | ------------------------------------------------------------ | ---- | --------------------- | ----------------- |
+    | avro | 1    | 604800000 ms (7 days) | Unlimited         |
+    | avro.inventory.addresses | 1    | 604800000 ms (7 days) | Unlimited         |
+    | avro.inventory.customers | 1    | 604800000 ms (7 days) | Unlimited         |
+    | avro.inventory.geom | 1    | 604800000 ms (7 days) | Unlimited         |
+    | avro.inventory.orders | 1    | 604800000 ms (7 days) | Unlimited         |
+    | avro.inventory.products | 1    | 604800000 ms (7 days) | Unlimited         |
+    | avro.inventory.products_on_hand | 1    | 604800000 ms (7 days) | Unlimited         |
+    | debezium-cluster-configs | 1    | 604800000 ms (7 days) | Unlimited         |
+    | debezium-cluster-offsets | 1    | 604800000 ms (7 days) | Unlimited         |
+    | debezium-cluster-status | 1    | 604800000 ms (7 days) | Unlimited         |
+    | schema-changes.inventory | 1    | 604800000 ms (7 days) | Unlimited |
 
 You should end with a table of topics like this:
 
@@ -194,7 +194,7 @@ Access the *Red Hat OpenShift Service Regtistry* console, and you should be able
 
 We will use kcat CLI utility to query the information from the OpenShift Streams Kafka cluster. 
 
-1. Set the environment variables in your terminal session:
+1. Set the environment variables in your terminal session with your cluster information:
 
    ```sh
    export BOOTSTRAP_SERVER=<replace-with-bootstrap-server>
@@ -280,7 +280,7 @@ We will use kcat CLI utility to query the information from the OpenShift Streams
 
    > This is because we are using Avro for the serialization. The kcat utility is expecting Strings and hence, can not convert correctly. We will fix this in the following step.
 
-4. Now that we can see the records, we can then connect with the service registry so kcat can query the used schema and deserialize correctly the missing information:
+4. Now that we can see the records, we can then ask kcat to connect with the OpenShift Service Registry so it can query the used schema and deserialize correctly the Avro records:
 
    ```sh
    kcat -b $BOOTSTRAP_SERVER \
