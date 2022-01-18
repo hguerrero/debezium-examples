@@ -21,7 +21,7 @@ services:
       KAFKA_CONNECT_BOOTSTRAP_SERVERS: <your-boostrap-server>:<port>
       KAFKA_CONNECT_TLS: 'true'
       KAFKA_CONNECT_SASL_MECHANISM: plain
-      KAFKA_CONNECT_SASL_USERNAME: <serviceaccount-client-id>
+      KAFKA_CONNECT_SASL_USERNAME: <kafka-sa-client-id>
       KAFKA_CONNECT_SASL_PASSWORD_FILE: cpass
       KAFKA_CONNECT_CONFIGURATION: |
         group.id=debezium-cluster

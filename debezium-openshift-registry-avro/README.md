@@ -55,7 +55,25 @@ To start the local services, follow these steps:
     cd debezium-examples/debezium-openshift-registry-avro
     ```
 
-1. Start the environment
+1. Open the `docker-compose.yaml` file and edit the following properties:
+
+    ```yaml
+          KAFKA_CONNECT_BOOTSTRAP_SERVERS: <your-boostrap-server>:<port>
+          KAFKA_CONNECT_TLS: 'true'
+          KAFKA_CONNECT_SASL_MECHANISM: plain
+          KAFKA_CONNECT_SASL_USERNAME: <kafka-sa-client-id>
+          KAFKA_CONNECT_SASL_PASSWORD_FILE: cpass
+    ```
+    
+    > You will need your Kafka bootstrap server and the service account you will use to connect. The image then takes the password from a file called `cpass`
+    
+1. Open the provided `cpass` file and replace the placeholder with your service account secret.
+
+    ```
+    <kafka-sa-client-secret>
+    ```
+
+1. Start the environment:
 
     ```bash
     docker-compose up -d
