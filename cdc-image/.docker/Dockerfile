@@ -1,4 +1,4 @@
-FROM registry.redhat.io/amq7/amq-streams-kafka-28-rhel8:1.8.0
+FROM registry.redhat.io/amq7/amq-streams-kafka-32-rhel8:2.2.0
 USER root:root
 COPY ./plugins/ /opt/kafka/plugins/
 COPY ./apicurio-converter/ /opt/kafka/external_libs/apicurio/
