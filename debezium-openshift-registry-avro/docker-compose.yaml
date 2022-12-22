@@ -3,7 +3,7 @@ services:
 
   mysql:
     container_name: mysql
-    image: debezium/example-mysql:1.3
+    image: debezium/example-mysql:1.9
     ports:
       - 3306:3306
     environment:
@@ -13,7 +13,7 @@ services:
 
   debezium:
     container_name: debezium
-    image: quay.io/redhatintegration/rhi-cdc-connect:2021-Q3
+    image: quay.io/redhatintegration/rhi-cdc-connect:2022-Q4
     command: [ "sh", "-c", "/opt/kafka/kafka_connect_run.sh" ]
     ports:
       - "8083:8083"
@@ -28,6 +28,11 @@ services:
         offset.storage.topic=debezium-cluster-offsets
         status.storage.topic=debezium-cluster-status
         config.storage.topic=debezium-cluster-configs
+        config.storage.replication.factor=1
+        offset.storage.replication.factor=1
+        offset.storage.partitions=1
+        status.storage.replication.factor=1
+        status.storage.partitions=1
         value.converter=org.apache.kafka.connect.json.JsonConverter
         key.converter=org.apache.kafka.connect.json.JsonConverter
     volumes:
